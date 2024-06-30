@@ -25,7 +25,7 @@ The CLI ATM System is a command-line interface (CLI) application that simulates 
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/iamansiinam/ts-calculator-cli.git
+git clone https://github.com/iamansiinam/ts-atm-cli.git
 cd atm
 ```
 2. Install dependencies:
