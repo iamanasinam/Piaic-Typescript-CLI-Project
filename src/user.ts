@@ -1,4 +1,16 @@
 import inquirer from "inquirer";
+import fs from "fs";
+import { userLogin } from "./atm.js";
+import chalk from "chalk";
+
+// Function to read data from a JSON file
+const readDataFromFile = (filename: string) => {
+  if (!fs.existsSync(filename)) {
+    return null;
+  }
+  const fileData = fs.readFileSync(filename, "utf-8");
+  return JSON.parse(fileData);
+};
 
 const createNewAccount = "Create a new account";
 const useExistingAccount = "Use existing account";
@@ -52,12 +64,17 @@ const validateCvv = (input: string) => {
   return true;
 };
 
+// Function to save data to data.json
+const saveDataToFile = (filename: string, data: object) => {
+  fs.writeFileSync(filename, JSON.stringify(data, null, 2));
+};
+
 export async function userAction() {
   const user = await inquirer.prompt([
     {
       name: "action",
       type: "list",
-      message: "Choose any of the following",
+      message: chalk.yellow("Choose any of the following"),
       choices: choicesOperations,
     },
   ]);
@@ -71,43 +88,43 @@ export async function userAction() {
         {
           name: "name",
           type: "input",
-          message: "Enter your Name",
+          message: chalk.yellow("Enter your Name"),
           validate: validateName,
         },
         {
           name: "pin1",
           type: "password",
-          message: "Enter your PIN",
+          message: chalk.yellow("Enter your PIN"),
           validate: validatePin,
         },
         {
           name: "pin2",
           type: "password",
-          message: "Re-Enter your PIN",
+          message: chalk.yellow("Re-Enter your PIN"),
           validate: validatePin,
         },
         {
           name: "type",
           type: "list",
-          message: "Choose your card type",
+          message: chalk.yellow("Choose your card type"),
           choices: ["Visa", "MasterCard"],
         },
         {
           name: "month",
           type: "input",
-          message: "Enter your Card expiry month (MM)",
+          message: chalk.yellow("Enter your Card expiry month (MM)"),
           validate: validateMonth,
         },
         {
           name: "year",
           type: "input",
-          message: "Enter your Card expiry year (YYYY)",
+          message: chalk.yellow("Enter your Card expiry year (YYYY)"),
           validate: validateYear,
         },
         {
           name: "cvv",
           type: "input",
-          message: "Enter your CVV number",
+          message: chalk.yellow("Enter your CVV number"),
           validate: validateCvv,
         },
       ]);
@@ -115,32 +132,58 @@ export async function userAction() {
       if (createAccountCredentials.pin1 === createAccountCredentials.pin2) {
         pinValid = true;
       } else {
-        console.log("PINs do not match. Please try again.");
+        console.log(chalk.red("PINs do not match. Please try again."));
       }
     }
 
-    const formattedExpiryDate = `${createAccountCredentials.month}/${createAccountCredentials.year}`;
-    console.log(
-      `Creating a new account with card name ${createAccountCredentials.name}, PIN ${createAccountCredentials.pin1}, card type ${createAccountCredentials.type}, expiry date ${formattedExpiryDate}, CVV ${createAccountCredentials.cvv}`
-    );
-  } else if (user.action === useExistingAccount) {
-    const existingAccountCredentials = await inquirer.prompt([
-      {
-        name: "name",
-        type: "input",
-        message: "Enter your Card Name",
-        validate: validateName,
-      },
-      {
-        name: "pin",
-        type: "password",
-        message: "Enter your PIN",
-        validate: validatePin,
-      },
-    ]);
+    const existingData = readDataFromFile("data.json");
 
-    console.log(
-      `Logging in as ${existingAccountCredentials.name} with PIN ${existingAccountCredentials.pin}`
-    );
+    const formattedExpiryDate = `${createAccountCredentials.month}/${createAccountCredentials.year}`;
+
+    let valuevalid = false;
+
+    for (let i = 0; i < existingData.length; i++) {
+        // console.log(`checking data for ${i} is ${existingData[i].name}`);
+        if (existingData[i].name === createAccountCredentials.name) {
+            valuevalid = true;
+            break;
+        }
+    }
+    
+    if (valuevalid) {
+      console.log(
+        chalk.red("An account with this name and PIN already exists.")
+      );
+      console.log(chalk.blue("Please Try Again"));
+      setTimeout(() => {
+        console.clear();
+      }, 4000);
+      setTimeout(() => {
+        userAction();
+      }, 4100);
+       
+    } else{
+           console.log( chalk.green(`Creating a new account with card name ${createAccountCredentials.name}, PIN ${createAccountCredentials.pin1}, card type ${createAccountCredentials.type}, expiry date ${formattedExpiryDate}, CVV ${createAccountCredentials.cvv}`));
+      // Save the data to data.json
+      const accountData = {
+        name: createAccountCredentials.name,
+        pin: createAccountCredentials.pin1,
+        type: createAccountCredentials.type,
+        expiryDate: formattedExpiryDate,
+        cvv: createAccountCredentials.cvv,
+        balance: 0,
+      };
+      existingData.push(accountData);
+      saveDataToFile("data.json", existingData);
+
+      setTimeout(() => {
+        console.clear();
+      }, 4000);
+      setTimeout(() => {
+        userAction();
+      }, 4100);
+    
+  } }else if (user.action === useExistingAccount) {
+    userLogin();
   }
 }
