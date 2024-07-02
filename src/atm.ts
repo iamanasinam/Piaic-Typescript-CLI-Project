@@ -154,7 +154,7 @@ export async function userLogin() {
               {
                 name: "to",
                 type: "input",
-                message: chalk.yellow("Enter the recipient's Card Name:"),
+                message: chalk.yellow("Enter the username:"),
               },
               {
                 name: "value",
@@ -166,7 +166,7 @@ export async function userLogin() {
 
             const transferValue = parseInt(Transfer.value, 10);
             const recipient = accountData.find(
-              (acc) => acc.name === Transfer.to
+              (acc) => acc.username === Transfer.to
             );
             if (
               recipient &&
