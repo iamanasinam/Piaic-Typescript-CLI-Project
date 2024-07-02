@@ -28,7 +28,7 @@ const validateName = (input: string) => {
   // Function to validate the PIN
 const validatePin = (input: string) => {
     if (!/^\d{4}$/.test(input)) {
-      return chalk.red("PIN must be exactly 4 digits.");
+      return chalk.red("PIN must be exactly 4-four numbers.");
     }
     return true;
   };
@@ -36,7 +36,7 @@ const validatePin = (input: string) => {
   // Function to validate and parse the expiry month
   const validateMonth = (input: string) => {
     if (!/^\d{2}$/.test(input)) {
-      return chalk.red("Month must be two digits.");
+      return chalk.red("Month must be 2-two numbers.");
     }
     const monthNumber = parseInt(input, 10);
     if (monthNumber < 1 || monthNumber > 12) {
@@ -48,7 +48,7 @@ const validatePin = (input: string) => {
   // Function to validate the expiry year
   const validateYear = (input: string) => {
     if (!/^\d{4}$/.test(input)) {
-      return chalk.red("Year must be four digits.");
+      return chalk.red("Year must be 4-four numbers.");
     }
     return true;
   };
@@ -56,7 +56,7 @@ const validatePin = (input: string) => {
   // Function to validate CVV
   const validateCvv = (input: string) => {
     if (!/^\d{3}$/.test(input)) {
-      return chalk.red("CVV must be exactly 3 digits.");
+      return chalk.red("CVV must be exactly 3-three numbers.");
     }
     return true;
   };

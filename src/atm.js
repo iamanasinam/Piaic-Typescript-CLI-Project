@@ -4,13 +4,11 @@ import chalk from "chalk";
 import { userAction } from "./user.js";
 import thankYouAscii from "./thankyou.js";
 const validateNumber = (input) => {
-    // Check if the input is a valid number
     if (!/^\d+$/.test(input)) {
         return "Input must be a valid number.";
     }
     return true;
 };
-// Function to read data from a JSON file
 const readDataFromFile = (filename) => {
     if (!fs.existsSync(filename)) {
         return null;
@@ -18,15 +16,13 @@ const readDataFromFile = (filename) => {
     const fileData = fs.readFileSync(filename, "utf-8");
     return JSON.parse(fileData);
 };
-// Delay function to wait for a specified time
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function userLogin() {
-    // Prompt user for existing account credentials
     const existingAccountCredentials = await inquirer.prompt([
         {
-            name: "name",
+            name: "username",
             type: "input",
-            message: chalk.yellow("Enter your Card Name"),
+            message: chalk.yellow("Enter your username"),
         },
         {
             name: "pin",
@@ -34,15 +30,14 @@ export async function userLogin() {
             message: chalk.yellow("Enter your PIN"),
         },
     ]);
-    // Read account data from file
     const accountData = readDataFromFile("data.json");
     if (accountData) {
         let accountFound = false;
         for (let i = 0; i < accountData.length; i++) {
-            if (accountData[i].name === existingAccountCredentials.name &&
+            if (accountData[i].username === existingAccountCredentials.username &&
                 accountData[i].pin === existingAccountCredentials.pin) {
                 accountFound = true;
-                function showCredentials() {
+                const showCredentials = () => {
                     console.log(chalk.blue.bold("\n\n=============================="));
                     console.log(chalk.blue.bold("     Account Details          "));
                     console.log(chalk.blue.bold("=============================="));
@@ -52,7 +47,7 @@ export async function userLogin() {
                     console.log(chalk.green.bold(`CVV           : ${accountData[i].cvv}`));
                     console.log(chalk.green.bold(`Balance       : ${accountData[i].balance}`));
                     console.log(chalk.blue.bold("=============================="));
-                }
+                };
                 let exit = false;
                 while (!exit) {
                     console.clear();
@@ -69,41 +64,38 @@ export async function userLogin() {
                         const Deposit = await inquirer.prompt([
                             {
                                 name: "value",
-                                type: "number",
+                                type: "input",
                                 message: chalk.yellow("Enter the deposit amount:"),
                                 validate: validateNumber,
                             },
                         ]);
-                        if (Deposit.value.type === "number") {
-                            accountData[i].balance = accountData[i].balance + Deposit.value;
+                        const depositValue = parseInt(Deposit.value, 10);
+                        if (depositValue > 0) {
+                            accountData[i].balance += depositValue;
                             fs.writeFileSync("data.json", JSON.stringify(accountData, null, 2));
                             thankYouAscii();
                             console.log(chalk.green.bold(`Deposited ${Deposit.value} Rs. Your new balance is ${accountData[i].balance} Rs.`));
                             await delay(4000);
                         }
                         else {
-                            console.log(chalk.red("Invalid input. Please enter a valid number."));
-                            console.log(chalk.red("Logging you out"));
-                            setTimeout(() => {
-                                console.clear();
-                                userAction();
-                            }, 3000);
+                            console.log(chalk.red("Invalid deposit amount. Please enter a valid number."));
                         }
                     }
                     else if (optPick.action === "Withdraw") {
                         const Withdraw = await inquirer.prompt([
                             {
                                 name: "value",
-                                type: "number",
+                                type: "input",
                                 message: chalk.yellow("Enter the withdraw amount:"),
                                 validate: validateNumber,
                             },
                         ]);
-                        if (Withdraw.value > accountData[i].balance) {
+                        const withdrawValue = parseInt(Withdraw.value, 10);
+                        if (withdrawValue > accountData[i].balance) {
                             console.log(chalk.red("Insufficient balance."));
                         }
                         else {
-                            accountData[i].balance = accountData[i].balance - Withdraw.value;
+                            accountData[i].balance -= withdrawValue;
                             fs.writeFileSync("data.json", JSON.stringify(accountData, null, 2));
                             thankYouAscii();
                             console.log(chalk.green(`Withdrew ${Withdraw.value} Rs. Your new balance is ${accountData[i].balance} Rs.`));
@@ -119,15 +111,18 @@ export async function userLogin() {
                             },
                             {
                                 name: "value",
-                                type: "number",
+                                type: "input",
                                 message: chalk.yellow("Enter the transfer amount:"),
                                 validate: validateNumber,
                             },
                         ]);
+                        const transferValue = parseInt(Transfer.value, 10);
                         const recipient = accountData.find((acc) => acc.name === Transfer.to);
-                        if (recipient && accountData[i].balance >= Transfer.value) {
-                            accountData[i].balance -= Transfer.value;
-                            recipient.balance += Transfer.value;
+                        if (recipient &&
+                            transferValue > 0 &&
+                            accountData[i].balance >= transferValue) {
+                            accountData[i].balance -= transferValue;
+                            recipient.balance += transferValue;
                             fs.writeFileSync("data.json", JSON.stringify(accountData, null, 2));
                             thankYouAscii();
                             console.log(chalk.green(`Transferred ${Transfer.value} Rs to ${Transfer.to}. Your new balance is ${accountData[i].balance} Rs.`));
@@ -145,6 +140,9 @@ export async function userLogin() {
                         console.clear();
                         exit = true;
                     }
+                }
+                if (exit) {
+                    userAction();
                 }
                 break;
             }

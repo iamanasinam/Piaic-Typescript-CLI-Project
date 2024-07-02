@@ -45,8 +45,6 @@ export async function userAction() {
     let createAccountCredentials: any;
     let pinValid = false;
     let existinggData = readDataFromFile("data.json") || [];
-    console.log(existinggData);
-    console.log(existinggData.length);
 
     while (!pinValid) {
       createAccountusername = await inquirer.prompt([
@@ -133,50 +131,30 @@ export async function userAction() {
 
     const formattedExpiryDate = `${createAccountCredentials.month}/${createAccountCredentials.year}`;
 
-    let valuevalid = false;
+    console.log(
+      chalk.green(
+        `Creating a new account with card name ${createAccountusername.name}, Username ${createAccountusername.username} PIN ${createAccountPin.pin1}, card type ${createAccountCredentials.type}, expiry date ${formattedExpiryDate}, CVV ${createAccountCredentials.cvv}`
+      )
+    );
+    // Save the data to data.json
+    const accountData = {
+      name: createAccountusername.name,
+      username: createAccountusername.username,
+      pin: createAccountPin.pin1,
+      type: createAccountCredentials.type,
+      expiryDate: formattedExpiryDate,
+      cvv: createAccountCredentials.cvv,
+      balance: 0,
+    };
+    existingData.push(accountData);
+    saveDataToFile("data.json", existingData);
 
-    for (let i = 0; i < existingData.length; i++) {
-      if (existingData[i].username === createAccountCredentials.username) {
-        valuevalid = true;
-        break;
-      }
-    }
-
-    if (valuevalid) {
-      console.log(chalk.red("Username already exists try something else!"));
-      console.log(chalk.blue("Please Try Again"));
-      setTimeout(() => {
-        console.clear();
-      }, 4000);
-      setTimeout(() => {
-        userAction();
-      }, 4100);
-    } else {
-      console.log(
-        chalk.green(
-          `Creating a new account with card name ${createAccountusername.name}, Username ${createAccountusername.username} PIN ${createAccountPin.pin1}, card type ${createAccountCredentials.type}, expiry date ${formattedExpiryDate}, CVV ${createAccountCredentials.cvv}`
-        )
-      );
-      // Save the data to data.json
-      const accountData = {
-        name: createAccountusername.name,
-        username: createAccountusername.username,
-        pin: createAccountPin.pin1,
-        type: createAccountCredentials.type,
-        expiryDate: formattedExpiryDate,
-        cvv: createAccountCredentials.cvv,
-        balance: 0,
-      };
-      existingData.push(accountData);
-      saveDataToFile("data.json", existingData);
-
-      setTimeout(() => {
-        console.clear();
-      }, 4000);
-      setTimeout(() => {
-        userAction();
-      }, 4100);
-    }
+    setTimeout(() => {
+      console.clear();
+    }, 4000);
+    setTimeout(() => {
+      userAction();
+    }, 4100);
   } else if (user.action === useExistingAccount) {
     userLogin();
   }
