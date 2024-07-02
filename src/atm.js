@@ -74,7 +74,7 @@ export async function userLogin() {
                             accountData[i].balance += depositValue;
                             fs.writeFileSync("data.json", JSON.stringify(accountData, null, 2));
                             thankYouAscii();
-                            console.log(chalk.green.bold(`Deposited ${Deposit.value} Rs. Your new balance is ${accountData[i].balance} Rs.`));
+                            console.log(chalk.green.bold("Deposited", chalk.yellow(Deposit.value), "Rs. Your new balance is", chalk.yellow(accountData[i].balance), "Rs."));
                             await delay(4000);
                         }
                         else {
@@ -92,13 +92,14 @@ export async function userLogin() {
                         ]);
                         const withdrawValue = parseInt(Withdraw.value, 10);
                         if (withdrawValue > accountData[i].balance) {
-                            console.log(chalk.red("Insufficient balance."));
+                            console.log(chalk.red("Insufficient balance.\nYour Current account balance is", chalk.yellow(accountData[i].balance), "and you are trying to withdraw", chalk.yellow(withdrawValue), "\nTry again later"));
+                            await delay(10000);
                         }
                         else {
                             accountData[i].balance -= withdrawValue;
                             fs.writeFileSync("data.json", JSON.stringify(accountData, null, 2));
                             thankYouAscii();
-                            console.log(chalk.green(`Withdrew ${Withdraw.value} Rs. Your new balance is ${accountData[i].balance} Rs.`));
+                            console.log(chalk.green("Withdrew ", chalk.yellow(Withdraw.value), "Rs. Your new balance is ", chalk.yellow(accountData[i].balance), "Rs."));
                             await delay(4000);
                         }
                     }
@@ -125,7 +126,7 @@ export async function userLogin() {
                             recipient.balance += transferValue;
                             fs.writeFileSync("data.json", JSON.stringify(accountData, null, 2));
                             thankYouAscii();
-                            console.log(chalk.green(`Transferred ${Transfer.value} Rs to ${Transfer.to}. Your new balance is ${accountData[i].balance} Rs.`));
+                            console.log(chalk.green("Transfered", chalk.yellow(Transfer.value), "Rs to", chalk.yellow(Transfer.to), ". Your new balance is", chalk.yellow(accountData[i].balance), "Rs."));
                             await delay(4000);
                         }
                         else {
@@ -151,7 +152,7 @@ export async function userLogin() {
             console.log(chalk.red("Invalid Credentials"));
             await delay(4000);
             console.clear();
-            userLogin();
+            userAction();
         }
     }
     else {
