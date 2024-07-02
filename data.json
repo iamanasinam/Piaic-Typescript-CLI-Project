@@ -1,34 +1,29 @@
 [
   {
     "name": "anas",
+    "username": "iamanasinam",
     "pin": "0000",
-    "type": "Visa",
-    "expiryDate": "09/2028",
+    "type": "MasterCard",
+    "expiryDate": "08/2028",
     "cvv": "090",
-    "balance": 998789678675874
-  },
-  {
-    "name": "sherri",
-    "pin": "0000",
-    "type": "MasterCard",
-    "expiryDate": "09/2032",
-    "cvv": "879",
-    "balance": 97
-  },
-  {
-    "name": "check",
-    "pin": "0000",
-    "type": "MasterCard",
-    "expiryDate": "09/2042",
-    "cvv": "980",
     "balance": 0
   },
   {
-    "name": "Hashirinam",
-    "pin": "4455",
+    "name": "Anas",
+    "username": "iamanas",
+    "pin": "0000",
     "type": "MasterCard",
-    "expiryDate": "08/2088",
-    "cvv": "900",
-    "balance": 99899992980000980
+    "expiryDate": "09/0000",
+    "cvv": "090",
+    "balance": 0
+  },
+  {
+    "name": "anas",
+    "username": "iamanas0990",
+    "pin": "0000",
+    "type": "MasterCard",
+    "expiryDate": "09/0909",
+    "cvv": "090",
+    "balance": 0
   }
 ]
