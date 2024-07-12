@@ -1,7 +1,6 @@
 import inquirer from "inquirer";
 import fs from "fs";
 import chalk from "chalk";
-
 // create a choice for todos
 const displayAllTodo = chalk.yellow("View All Todo");
 const createNewTodo = chalk.yellow("Create a new Todo");
@@ -9,20 +8,10 @@ const editTodo = chalk.yellow("Edit Todo");
 const deleteTodo = chalk.yellow("Delete Todo");
 const exitTodo = chalk.yellow("Exit Todo");
 const choicesOperation = [displayAllTodo, createNewTodo, editTodo, deleteTodo, exitTodo];
-
-// types.ts
-export interface Todo {
-    id: number;
-    title: string;
-    description: string;
-    completed: boolean;
-}
-
 // create object for storing the todo list
-let todos: Todo[] = JSON.parse(fs.readFileSync("todos.json", "utf8")) || [];
-
+let todos = JSON.parse(fs.readFileSync("todos.json", "utf8")) || [];
 // Validation functions
-const validateTitle = (input: string) => {
+const validateTitle = (input) => {
     if (!input) {
         return "Title cannot be empty!";
     }
@@ -31,8 +20,7 @@ const validateTitle = (input: string) => {
     }
     return true;
 };
-
-const validateDescription = (input: string) => {
+const validateDescription = (input) => {
     if (!input) {
         return "Description cannot be empty!";
     }
@@ -41,10 +29,8 @@ const validateDescription = (input: string) => {
     }
     return true;
 };
-
 // Function to create a delay
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 async function main() {
     while (true) {
         console.clear();
@@ -56,25 +42,23 @@ async function main() {
                 choices: choicesOperation,
             },
         ]);
-
         if (todoQuestion.todo === displayAllTodo) {
             if (todos.length < 1) {
                 console.clear();
                 console.log(chalk.red("Currently there is no todo"));
-            } else {
+            }
+            else {
                 console.clear();
                 console.log(chalk.green("================================================================"));
                 console.log(chalk.green("================================================================"));
                 console.log(chalk.green("Todos List:"));
                 todos.forEach((todo) => {
-                    console.log(chalk.yellow("\nId:"), chalk.green(todo.id), 
-                                chalk.yellow("\nTitle: "), chalk.green(todo.title), 
-                                chalk.yellow("\nDescription: "), chalk.green(todo.description), 
-                                chalk.yellow("\nCompleted: "), chalk.green(`${todo.completed ? "Completed" : "Not Completed"}`));
+                    console.log(chalk.yellow("\nId:"), chalk.green(todo.id), chalk.yellow("\nTitle: "), chalk.green(todo.title), chalk.yellow("\nDescription: "), chalk.green(todo.description), chalk.yellow("\nCompleted: "), chalk.green(`${todo.completed ? "Completed" : "Not Completed"}`));
                 });
             }
             await delay(3000); // Wait for 3 seconds after displaying todos
-        } else if (todoQuestion.todo === createNewTodo) {
+        }
+        else if (todoQuestion.todo === createNewTodo) {
             const answers = await inquirer.prompt([
                 {
                     type: "input",
@@ -98,7 +82,8 @@ async function main() {
             fs.writeFileSync("todos.json", JSON.stringify(todos, null, 2));
             console.log(chalk.green("Todo created successfully!"));
             await delay(3000); // Wait for 3 seconds
-        } else if (todoQuestion.todo === editTodo) {
+        }
+        else if (todoQuestion.todo === editTodo) {
             const answers = await inquirer.prompt([
                 {
                     type: "input",
@@ -126,11 +111,13 @@ async function main() {
                 todos[todoIndex].description = newAnswers.description;
                 fs.writeFileSync("todos.json", JSON.stringify(todos, null, 2));
                 console.log(chalk.green("Todo updated successfully!"));
-            } else {
+            }
+            else {
                 console.log(chalk.red("Todo not found!"));
             }
             await delay(3000); // Wait for 3 seconds
-        } else if (todoQuestion.todo === deleteTodo) {
+        }
+        else if (todoQuestion.todo === deleteTodo) {
             const answers = await inquirer.prompt([
                 {
                     type: "input",
@@ -143,16 +130,17 @@ async function main() {
                 todos.splice(todoIndex, 1);
                 fs.writeFileSync("todos.json", JSON.stringify(todos, null, 2));
                 console.log(chalk.green("Todo deleted successfully!"));
-            } else {
+            }
+            else {
                 console.log(chalk.red("Todo not found!"));
             }
             await delay(3000); // Wait for 3 seconds
-        } else if (todoQuestion.todo === exitTodo) {
+        }
+        else if (todoQuestion.todo === exitTodo) {
             console.log(chalk.green("Exiting..."));
             break;
         }
     }
 }
-
 // Run the main function
 main();
