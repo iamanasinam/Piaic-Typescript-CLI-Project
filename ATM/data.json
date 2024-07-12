@@ -6,7 +6,7 @@
     "type": "MasterCard",
     "expiryDate": "08/2028",
     "cvv": "090",
-    "balance": 2164
+    "balance": 2154
   },
   {
     "name": "sharry",
@@ -15,6 +15,15 @@
     "type": "MasterCard",
     "expiryDate": "01/2028",
     "cvv": "938",
-    "balance": 8824896588
+    "balance": 8824896678
+  },
+  {
+    "name": "Ansi",
+    "username": "iamanas",
+    "pin": "0000",
+    "type": "Visa",
+    "expiryDate": "11/2028",
+    "cvv": "900",
+    "balance": 0
   }
 ]
