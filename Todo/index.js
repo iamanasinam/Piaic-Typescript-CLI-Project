@@ -2,12 +2,11 @@ import inquirer from "inquirer";
 import fs from "fs";
 import chalk from "chalk";
 // create a choice for todos
-const displayAllTodo = chalk.yellow("View All Todo");
 const createNewTodo = chalk.yellow("Create a new Todo");
 const editTodo = chalk.yellow("Edit Todo");
 const deleteTodo = chalk.yellow("Delete Todo");
 const exitTodo = chalk.yellow("Exit Todo");
-const choicesOperation = [displayAllTodo, createNewTodo, editTodo, deleteTodo, exitTodo];
+const choicesOperation = [createNewTodo, editTodo, deleteTodo, exitTodo];
 // create object for storing the todo list
 let todos = JSON.parse(fs.readFileSync("todos.json", "utf8")) || [];
 // Validation functions
@@ -34,6 +33,21 @@ const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 async function main() {
     while (true) {
         console.clear();
+        if (todos.length < 1) {
+            console.clear();
+            console.log(chalk.red("Currently there is no todo"));
+        }
+        else {
+            console.clear();
+            // console.log(chalk.blue("================================================================"));
+            // console.log(chalk.blue("================================================================"));
+            console.log(chalk.green("Todos List: ", todos.length));
+            todos.forEach((todo) => {
+                console.log(chalk.yellow("\nId:"), chalk.green(todo.id), chalk.yellow(" Title: "), chalk.green(todo.title), chalk.yellow(" Description: "), chalk.green(todo.description));
+            });
+            console.log(chalk.green("\n\n========================================="));
+            // console.log(chalk.blue("================================================================\n\n"));
+        }
         const todoQuestion = await inquirer.prompt([
             {
                 type: "list",
@@ -42,23 +56,7 @@ async function main() {
                 choices: choicesOperation,
             },
         ]);
-        if (todoQuestion.todo === displayAllTodo) {
-            if (todos.length < 1) {
-                console.clear();
-                console.log(chalk.red("Currently there is no todo"));
-            }
-            else {
-                console.clear();
-                console.log(chalk.green("================================================================"));
-                console.log(chalk.green("================================================================"));
-                console.log(chalk.green("Todos List:"));
-                todos.forEach((todo) => {
-                    console.log(chalk.yellow("\nId:"), chalk.green(todo.id), chalk.yellow("\nTitle: "), chalk.green(todo.title), chalk.yellow("\nDescription: "), chalk.green(todo.description), chalk.yellow("\nCompleted: "), chalk.green(`${todo.completed ? "Completed" : "Not Completed"}`));
-                });
-            }
-            await delay(3000); // Wait for 3 seconds after displaying todos
-        }
-        else if (todoQuestion.todo === createNewTodo) {
+        if (todoQuestion.todo === createNewTodo) {
             const answers = await inquirer.prompt([
                 {
                     type: "input",
@@ -76,8 +74,7 @@ async function main() {
             todos.push({
                 id: todos.length + 1,
                 title: answers.title,
-                description: answers.description,
-                completed: false,
+                description: answers.description
             });
             fs.writeFileSync("todos.json", JSON.stringify(todos, null, 2));
             console.log(chalk.green("Todo created successfully!"));
@@ -137,7 +134,10 @@ async function main() {
             await delay(3000); // Wait for 3 seconds
         }
         else if (todoQuestion.todo === exitTodo) {
+            console.clear();
             console.log(chalk.green("Exiting..."));
+            await delay(3000);
+            console.clear();
             break;
         }
     }
