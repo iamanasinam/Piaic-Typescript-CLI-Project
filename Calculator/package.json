@@ -1,0 +1,28 @@
+{
+  "name": "ts-calculator-cli",
+  "version": "1.0.0",
+  "description": "Calculator using Cli",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/iamansiinam/ts-calculator-cli.git"
+  },
+  "author": "Anas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iamansiinam/ts-calculator-cli/issues"
+  },
+  "homepage": "https://github.com/iamansiinam/ts-calculator-cli#readme",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "inquirer": "^9.3.1"
+  },
+  "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/inquirer": "^9.0.7"
+  }
+}
